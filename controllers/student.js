@@ -1,6 +1,20 @@
 const Student = require('../models/student');
 const md5 = require('md5');
 
+//GET ONE STUDENT
+exports.getStudent = (req, res, next) => {
+    const id = req.id;
+
+    Student.findOne({
+        where: {
+            id: id
+        }
+    }).then( student => {
+        res.status(200).json({
+            student: student});
+    }).catch(err => console.log(err));
+}
+
 //REGISTER STUDENT
 exports.createStudent = (req, res, next) => {
     
@@ -36,7 +50,7 @@ exports.createStudent = (req, res, next) => {
 //UPDATE STUDENT
 exports.updateStudent = (req, res, next) => {
     
-    const student_id = req.params.student_id;
+    const student_id = req.id;
     const fullname = req.body.fullname;
     const student_number = req.body.student_number;
     const email = req.body.email;
@@ -52,7 +66,7 @@ exports.updateStudent = (req, res, next) => {
         student.fullname = fullname;
         student.email = email;
         student.program = program
-        student.password = password
+        student.password = md5(password)
 
         return student.save();
 

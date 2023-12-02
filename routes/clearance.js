@@ -6,6 +6,7 @@ const student_auth = require('../middlewares/student_auth');
 
 router.post('/', student_auth, controller.createClearance); //Create clearance
 router.get('/student', student_auth, controller.getClearancesByStudentId) //Get all student clearance request
+router.get('/student/requests', student_auth, controller.getAllClearanceDetails)
 router.put('/student/:id', student_auth, controller.updateClearance); //Update clearance
 
 

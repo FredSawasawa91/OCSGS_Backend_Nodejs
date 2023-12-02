@@ -3,7 +3,8 @@ const router = require('express').Router();
 const auth = require('../middlewares/student_auth');
 
 router.post('/', controller.createStudent); //Create Student
-router.put('/:student_id', auth, controller.updateStudent); //Update student
+router.get('/', auth, controller.getStudent);
+router.put('/', auth, controller.updateStudent); //Update student
 
 
 module.exports = router;

@@ -31,7 +31,7 @@ exports.getStaffByRole = (req, res, next) => {
 
 //GET USERS/STAFF BY ID
 exports.getStaffById = (req, res, next) => {
-    const id = req.params.id;
+    const id = req.id;
     Staff.findOne({
         where: {
             id: id
@@ -80,7 +80,7 @@ exports.createStaff = (req, res, next) => {
 //UPDATE STAFF
 exports.updateStaff = (req, res, next) => {
     
-    const staff_id = req.params.staff_id;
+    const staff_id = req.id;
     const fullname = req.body.fullname;
     const email = req.body.email;
     const role = req.body.role;

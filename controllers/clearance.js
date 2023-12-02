@@ -56,22 +56,6 @@ exports.createClearance = (req, res, next) => {
         });
 
     })
-
-    /*Clearance.bulkCreate([
-        {type: 'library', status: status, student_id: student_id, studentId: student_id},
-        {type: 'accounts', status: status, student_id: student_id, studentId: student_id},
-        {type: 'admissions', status: status, student_id: student_id, studentId: student_id},
-        {type: 'research', status: status, student_id: student_id, studentId: student_id}
-    ]).then(result => {
-        console.log(`Success`);
-        res.status(201).json({
-            success: 1,
-            message: `Requested for clearance successfully`,
-            clearance: result
-        });
-    }).catch(err => {
-        console.log(err);
-    });*/
 }
 
 //UPDATE REQUEST
@@ -127,6 +111,20 @@ exports.getClearancesByTypeAndStatus = (req, res, next) => {
     const status = req.params.status;
 
     let sql = `SELECT clearance_requests.id, clearance_requests.type, clearance_requests.status, clearance_requests.createdAt, clearance_requests.staff_comment, students.fullname, students.student_number, students.program FROM clearance_requests INNER JOIN students ON clearance_requests.student_id = students.id WHERE clearance_requests.type = "${type}" AND clearance_requests.status = "${status}"`
+
+    sequelize.query(sql, {type: QueryTypes.SELECT}).then( clearances => {
+        res.status(200).json({
+            success: 1,
+            clearance: clearances});
+    }).catch(err => console.log(err));
+}
+
+//GET ALL CLEARANCES DETAILS BY STUDENT NUMBER
+exports.getAllClearanceDetails = (req, res, next) => {
+    const id = req.id;
+    //const status = req.params.status;
+
+    let sql = `SELECT clearance_requests.id, clearance_requests.type, clearance_requests.status, students.student_number, students.fullname as student_fullname, students.email as student_email, students.program, clearance_trackings.id as tracking_id, clearance_trackings.createdAt, staffs.fullname as staff_fullname FROM clearance_requests LEFT OUTER JOIN students on clearance_requests.student_id = students.id LEFT OUTER JOIN clearance_trackings ON clearance_requests.id = clearance_trackings.clearance_id LEFT OUTER JOIN staffs ON clearance_trackings.staff_id = staffs.id WHERE students.id = ${id}`
 
     sequelize.query(sql, {type: QueryTypes.SELECT}).then( clearances => {
         res.status(200).json({
@@ -206,3 +204,7 @@ exports.clearanceAction = (req, res, next) => {
         res.status(200).json({success: 1, message: `Request ${status}`, clearance: result});
     }).catch(err => console.log(err));
 }
+
+/**
+ * SELECT clearance_requests.id, clearance_requests.type, clearance_requests.status, students.student_number, students.fullname as student_fullname, students.email as student_email, students.program, clearance_trackings.id as tracking_id, clearance_trackings.createdAt, staffs.fullname as staff_fullname FROM clearance_requests LEFT OUTER JOIN students on clearance_requests.student_id = students.id LEFT OUTER JOIN clearance_trackings ON clearance_requests.id = clearance_trackings.clearance_id LEFT OUTER JOIN staffs ON clearance_trackings.staff_id = staffs.id WHERE students.id =1
+ */

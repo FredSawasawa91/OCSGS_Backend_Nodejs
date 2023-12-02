@@ -5,8 +5,8 @@ const auth = require('../middlewares/staff_auth');
 router.post('/', auth, controller.createStaff); //Create Staff
 router.get('/', auth, controller.getStaff) //Get all staff
 router.get('/:role', auth, controller.getStaffByRole); //Get staff by role
-router.get('/staff_id/:id', auth, controller.getStaffById); //Get staff by id
-router.put('/:staff_id', auth, controller.updateStaff); //Update staff
+router.get('/staff/byid', auth, controller.getStaffById); //Get staff by id
+router.put('', auth, controller.updateStaff); //Update staff
 router.delete('/:staff_id', auth, controller.deleteStaff); //Delete staff
 
 
