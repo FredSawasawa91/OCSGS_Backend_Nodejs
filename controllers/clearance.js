@@ -124,7 +124,7 @@ exports.getAllClearanceDetails = (req, res, next) => {
     const id = req.id;
     //const status = req.params.status;
 
-    let sql = `SELECT clearance_requests.id, clearance_requests.type, clearance_requests.status, students.student_number, students.fullname as student_fullname, students.email as student_email, students.program, clearance_trackings.id as tracking_id, clearance_trackings.createdAt, staffs.fullname as staff_fullname FROM clearance_requests LEFT OUTER JOIN students on clearance_requests.student_id = students.id LEFT OUTER JOIN clearance_trackings ON clearance_requests.id = clearance_trackings.clearance_id LEFT OUTER JOIN staffs ON clearance_trackings.staff_id = staffs.id WHERE students.id = ${id}`
+    let sql = `SELECT clearance_requests.id, clearance_requests.type, clearance_requests.status, students.student_number, students.fullname as student_fullname, students.email as student_email, students.program, clearance_trackings.id as tracking_id, clearance_trackings.createdAt, staffs.fullname as staff_fullname FROM clearance_requests LEFT OUTER JOIN students on clearance_requests.student_id = students.id LEFT OUTER JOIN clearance_trackings ON clearance_requests.id = clearance_trackings.clearance_id LEFT OUTER JOIN staffs ON clearance_trackings.staff_id = staffs.id WHERE students.id = ${id} GROUP BY clearance_requests.id`
 
     sequelize.query(sql, {type: QueryTypes.SELECT}).then( clearances => {
         res.status(200).json({
