@@ -1,4 +1,6 @@
 const Student = require('../models/student');
+const { QueryTypes } = require('sequelize');
+const sequelize = require('../utils/db');
 const md5 = require('md5');
 
 //GET ONE STUDENT
@@ -12,6 +14,31 @@ exports.getStudent = (req, res, next) => {
     }).then( student => {
         res.status(200).json({
             student: student});
+    }).catch(err => console.log(err));
+}
+
+//GET ALL STUDENTS WHO HAVE BEEN CLEARED IN ALL 4 SERVICES
+exports.getClearedStudents = (req, res, next) => {
+
+    let sql = `SELECT student_number, fullname, program FROM students WHERE students.id IN ( SELECT student_id FROM clearance_requests WHERE status = 'approved' GROUP BY student_id HAVING COUNT(DISTINCT type) = 4 )`
+
+    sequelize.query(sql, {type: QueryTypes.SELECT}).then( Students => {
+        res.status(200).json({
+            success: 1,
+            Students: Students});
+    }).catch(err => console.log(err));
+}
+
+//GET ALL STUDENTS WHO HAVE BEEN CLEARED IN ALL A PARTICULAR SERVICE
+exports.getClearedStudentsByType = (req, res, next) => {
+    const service_type = req.role;
+
+    let sql = `SELECT clearance_requests.type, clearance_requests.status, students.student_number, students.fullname as student_fullname, students.email as student_email, students.program FROM clearance_requests LEFT OUTER JOIN students on clearance_requests.student_id = students.id WHERE clearance_requests.type = '${service_type}' AND clearance_requests.status = 'approved'`
+
+    sequelize.query(sql, {type: QueryTypes.SELECT}).then( Students => {
+        res.status(200).json({
+            success: 1,
+            Students: Students});
     }).catch(err => console.log(err));
 }
 

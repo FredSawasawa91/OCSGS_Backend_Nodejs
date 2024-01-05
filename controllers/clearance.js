@@ -3,6 +3,7 @@ const Clearance = require('../models/clearance');
 const Clearance_tracking = require('../models/clearance_tracking');
 const sequelize = require('../utils/db');
 const nodemailer = require('nodemailer');
+const Student = require('../models/student');
 require('dotenv').config();
 
 
@@ -138,6 +139,7 @@ exports.clearanceAction = (req, res, next) => {
     
     const status = req.body.status;
     const email = req.body.email;
+    const staff_comment = req.body.comment;
     const clearance_id = req.params.id;
     const staff_id = req.id;
     const role = req.role;
@@ -148,6 +150,7 @@ exports.clearanceAction = (req, res, next) => {
         }
         
         clearance.status = status;
+        clearance.staff_comment = staff_comment;
 
         Clearance_tracking.create({
             action_perfomed: status,
@@ -156,7 +159,6 @@ exports.clearanceAction = (req, res, next) => {
             staff_id: staff_id,
             staffId: staff_id
         }).then(result => {
-            //console.log(email)
 
             //capitalise first letter of role string
             const modRole = role[0].toUpperCase() + role.slice(1);
@@ -207,4 +209,11 @@ exports.clearanceAction = (req, res, next) => {
 
 /**
  * SELECT clearance_requests.id, clearance_requests.type, clearance_requests.status, students.student_number, students.fullname as student_fullname, students.email as student_email, students.program, clearance_trackings.id as tracking_id, clearance_trackings.createdAt, staffs.fullname as staff_fullname FROM clearance_requests LEFT OUTER JOIN students on clearance_requests.student_id = students.id LEFT OUTER JOIN clearance_trackings ON clearance_requests.id = clearance_trackings.clearance_id LEFT OUTER JOIN staffs ON clearance_trackings.staff_id = staffs.id WHERE students.id =1
+ * 
+ * All aproved students
+ * SELECT student_number, fullname, program FROM students WHERE students.id IN ( SELECT student_id FROM clearance_requests WHERE status = 'approved' GROUP BY student_id HAVING COUNT(DISTINCT type) = 4 )
+ * 
+ * 
+ * SELECT clearance_requests.type, clearance_requests.status, students.student_number, students.fullname as student_fullname, students.email as student_email, students.program FROM clearance_requests LEFT OUTER JOIN students on clearance_requests.student_id = students.id WHERE clearance_requests.type = 'library' AND clearance_requests.status = 'approved'
  */
+

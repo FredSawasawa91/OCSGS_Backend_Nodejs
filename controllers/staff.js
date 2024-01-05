@@ -42,6 +42,23 @@ exports.getStaffById = (req, res, next) => {
     }).catch(err => console.log(err));
 }
 
+//GET USERS/STAFF BY ID
+exports.getUserById = (req, res, next) => {
+    const id = req.params.id;
+
+    if (req.role !='admin') {
+        return res.status(401).json({ message: 'Not Authorised'})
+    }
+    Staff.findOne({
+        where: {
+            id: id
+        }
+    }).then( staff => {
+        res.status(200).json({
+            staff: staff});
+    }).catch(err => console.log(err));
+}
+
 //REGISTER STAFF
 exports.createStaff = (req, res, next) => {
     
@@ -86,6 +103,36 @@ exports.updateStaff = (req, res, next) => {
     const role = req.body.role;
     const password = md5(req.body.password);
     
+    Staff.findByPk(staff_id).then(staff => {
+        if (!staff) {
+            return res.status(404).json({ message: 'User not found'});
+        }
+        
+        staff.fullname = fullname;
+        staff.email = email;
+        staff.role = role
+        staff.password = password
+
+        return staff.save();
+
+    }).then(result => {
+        res.status(200).json({message: `${result.fullname} updated`, staff: result});
+    }).catch(err => console.log(err));
+}
+
+//UPDATE STAFF (Admin update user)
+exports.editUser = (req, res, next) => {
+    
+    const staff_id = req.params.id;
+    const fullname = req.body.fullname;
+    const email = req.body.email;
+    const role = req.body.role;
+    const password = md5(req.body.password);
+    
+    if(req.role != 'admin'){
+        return res.status(401).json({message: 'Not Authorised'})
+    }
+
     Staff.findByPk(staff_id).then(staff => {
         if (!staff) {
             return res.status(404).json({ message: 'User not found'});
