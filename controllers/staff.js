@@ -100,7 +100,7 @@ exports.updateStaff = (req, res, next) => {
     const staff_id = req.id;
     const fullname = req.body.fullname;
     const email = req.body.email;
-    const role = req.body.role;
+    //const role = req.body.role;
     const password = md5(req.body.password);
     
     Staff.findByPk(staff_id).then(staff => {
@@ -110,7 +110,7 @@ exports.updateStaff = (req, res, next) => {
         
         staff.fullname = fullname;
         staff.email = email;
-        staff.role = role
+        //staff.role = role
         staff.password = password
 
         return staff.save();
