@@ -18,6 +18,10 @@ const Student = db.define( 'student', {
         type: Sequelize.STRING,
         allowNull: false
     },
+    year_joined: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     password: {
         type: Sequelize.STRING,
         allowNull: false

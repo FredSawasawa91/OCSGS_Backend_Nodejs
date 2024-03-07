@@ -25,7 +25,7 @@ exports.student_login = (req, res, next) => {
         const token = jwt.sign({id: student.id, student_number: student.student_number, student_name: student.fullname, program: student.program}, access_token_key);
 
         // User authenticated successfully
-        return res.status(200).json({ success: 1, message: 'Login successful', token: token });
+        return res.status(200).json({ success: 1, message: 'Login successful', student_name: student.fullname, token: token });
 
     }).catch(err => console.log(err));
 }

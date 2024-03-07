@@ -48,7 +48,7 @@ exports.staff_login = (req, res, next) => {
                 const token = jwt.sign({id: staff.id, fullname: staff.fullname, role: staff.role}, access_token_key);
         
                 // User authenticated successfully
-                return res.status(200).json({ success: 1, message: 'Login successful', role: staff.role, token: token });
+                return res.status(200).json({ success: 1, message: 'Login successful', fullname: staff.fullname, role: staff.role, token: token });
         
             }).catch(err => console.log(err));
 
